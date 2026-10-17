@@ -1,62 +1,5 @@
+/* Public reading controls. No private storage or authoring APIs. */
 (() => {
-  const reviewPrefix = 'topos-ag-final:reviewed:v1:';
-  let reviewStatus = {online: false, pending: 0};
-  const reviewSync = createReviewSync({
-    storage: {getItem: key => localStorage.getItem(key), setItem: (key, value) => localStorage.setItem(key, value),
-      removeItem: key => localStorage.removeItem(key), key: i => localStorage.key(i), get length() { return localStorage.length; }},
-    request: (...args) => fetch(...args),
-    changed: status => {
-      reviewStatus = status;
-      reviewInputs.forEach((input, key) => restoreReview(key, input));
-      updateReviewIndicators();
-    }
-  });
-  const reviewInputs = new Map();
-  const updateReviewIndicators = bindReviewIndicators(document, id => reviewSync.checked(id));
-  updateReviewIndicators();
-  function restoreReview(key, input) {
-    const ids = JSON.parse(input.dataset.reviewIds || 'null') || [key.slice(reviewPrefix.length)];
-    input.checked = ids.every(id => reviewSync.checked(id));
-    input.parentElement.title = reviewStatus.localOnly ? '確認状態をこのブラウザー内に保存'
-      : reviewStatus.online && !reviewStatus.pending
-      ? '確認状態をサーバーと同期済み'
-      : '確認状態は未同期. 接続後に再送する. ';
-  }
-  document.querySelectorAll('.statement[id], .outline-section[data-review-section]').forEach(statement => {
-    const outline = statement.classList.contains('outline-section');
-    const heading = statement.querySelector(outline ? ':scope > details > summary' : ':scope > h3');
-    if (!heading) return;
-    const key = reviewPrefix + statement.id;
-    const label = document.createElement('label');
-    label.className = outline ? 'statement-review outline-section-review' : 'statement-review';
-    label.title = '確認状態をこのブラウザーに保存';
-    const input = document.createElement('input');
-    const pair = statement.closest('.statement-pair');
-    const ids = pair ? [...pair.querySelectorAll('.statement[id]')].map(item => item.id) : [statement.id];
-    input.dataset.reviewIds = JSON.stringify(ids);
-    input.type = 'checkbox';
-    input.autocomplete = 'off';
-    heading.setAttribute('aria-label', heading.textContent.trim());
-    input.setAttribute('aria-label', `${heading.textContent.trim()}：確認済み`);
-    label.append(input, document.createTextNode('確認済み'));
-    if (outline) statement.prepend(label);
-    else heading.append(label);
-    reviewInputs.set(key, input);
-    restoreReview(key, input);
-    input.addEventListener('change', () => {
-      const checked = input.checked;
-      void Promise.all(ids.map(id => reviewSync.set(id, checked)));
-    });
-  });
-  addEventListener('storage', event => {
-    if (event.key === null || event.key.startsWith(reviewPrefix) || event.key === 'topos-ag-final:review-pending:v1') void reviewSync.sync();
-  });
-  addEventListener('pageshow', () => { void reviewSync.sync(); });
-  addEventListener('focus', () => { void reviewSync.sync(); });
-  addEventListener('online', () => { void reviewSync.sync(); });
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) void reviewSync.sync(); });
-  setInterval(() => { if (!document.hidden) void reviewSync.sync(); }, 2000);
-  void reviewSync.sync();
   bindStatementScopes(document);
   const viewSync = bindStatementViews();
   bindMathLayout(document);
@@ -196,5 +139,4 @@
   }
   addEventListener('hashchange', () => { hideNote(); showTarget(); });
   showTarget();
-  bindComments({reveal: viewSync.reveal});
 })();
