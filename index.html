@@ -5,11 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>勉強ノート</title>
 <style>
-body { margin: 2rem; font: 18px/2 system-ui, sans-serif; }
-a { display: block; width: fit-content; }
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #fafaf8; color: #222; font: 16px/1.8 system-ui, sans-serif; }
+main { width: min(100% - 3rem, 42rem); margin: 4.5rem auto; }
+header { border-top: 3px solid #222; border-bottom: 1px solid #bbb; padding: 1.2rem 0; margin-bottom: 1rem; }
+h1 { margin: 0; font-size: 1.5rem; font-weight: 650; letter-spacing: .04em; }
+a { display: block; padding: .7rem 0; border-bottom: 1px solid #d6d6d2; color: inherit; text-decoration: none; overflow-wrap: anywhere; }
+a:hover { text-decoration: underline; text-underline-offset: .2em; }
+a:focus-visible { outline: 2px solid #222; outline-offset: 4px; }
+section p { color: #555; font-size: .85rem; line-height: 1.8; margin: 0 0 .6rem; }
+@media (max-width: 600px) { main { margin-block: 2rem; } h1 { font-size: 1.3rem; } }
 </style>
 </head>
 <body>
+<main>
+<header><h1>勉強ノート</h1></header>
 <a href="shtuka.html">shutuka</a>
 <a href="gestalten.html">gestalt</a>
 <!-- topos-sites:start -->
@@ -18,5 +29,6 @@ a { display: block; width: fit-content; }
 <a href="topos/">トポスの内部言語による代数幾何</a>
 <a href="topos-experimental/">トポスの内部言語による代数幾何（実験版）</a>
 </section>
-<!-- topos-sites:end --></body>
+<!-- topos-sites:end --></main>
+</body>
 </html>
