@@ -370,3 +370,6 @@ html { scroll-padding-top: calc(var(--site-header-height, 4.5rem) + 1rem); }
   .scope-mode-switch { display: none; }
   .statement-scope[hidden] { display: block; }
 }
+
+.term-reference { color: inherit; text-decoration-line: underline; text-decoration-style: dotted; text-decoration-color: #9aa8b6; text-underline-offset: .18em; }
+.definition-location { margin: .5rem 0 0; font-size: .8rem; }
